@@ -64,9 +64,7 @@ public class AStar {
         //For loop through and check all neighbours of 0.
         // For each of these create a new node with grids with that neighbour
         // exchanged with 0.
-
-        for (int i = 0; i < parentNode.grid.length; i++) {
-            for(int j = 0; j < parentNode.grid.length; j++) {
+        
                 if (parentNode.grid[i][j] == 0) {
                     // check if top move available, if so create new
                     if (i-1 <= 2 && i-1 >= 0){
@@ -150,8 +148,7 @@ public class AStar {
                         openList.add(newNode);
                     }
                 }
-            }
-        }
+
 
         Collections.sort(openList);
         Collections.reverse(openList);
