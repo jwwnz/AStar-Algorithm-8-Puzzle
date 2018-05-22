@@ -64,17 +64,13 @@ public class AStar {
         //For loop through and check all neighbours of 0.
         // For each of these create a new node with grids with that neighbour
         // exchanged with 0.
-        
-                if (parentNode.grid[i][j] == 0) {
+
                     // check if top move available, if so create new
-                    if (i-1 <= 2 && i-1 >= 0){
+                    if (parentNode.coordinateYempty-1 <= 2 && parentNode.coordinateYempty-1 >= 0){
 
-                        int[][] newGrid = Arrays.copyOf(parentNode.grid, parentNode.grid.length);
+                        int[][] newGrid = createNewGrid(parentNode.grid);
 
-//                        System.arraycopy(parentNode.grid, 0, newGrid, 1, parentNode.grid.length);
-
-                        System.out.println("number: " + newGrid[i-1][j]);
-
+                        System.out.println("top move");
                         for (int k = 0; k < newGrid.length; k++) {
                             for (int l = 0; l < newGrid.length; l++) {
                                 System.out.print(newGrid[k][l] + " ");
@@ -82,14 +78,12 @@ public class AStar {
                             System.out.println();
                         }
 
-
-                        newGrid[i][j] = newGrid[i-1][j];
-                        newGrid[i-1][j] = 0;
+                        newGrid[parentNode.coordinateYempty][parentNode.coordinateXempty] = newGrid[parentNode.coordinateYempty-1][parentNode.coordinateXempty];
+                        newGrid[parentNode.coordinateYempty-1][parentNode.coordinateXempty] = 0;
 
                         for (int k = 0; k < newGrid.length; k++) {
                             for (int l = 0; l < newGrid.length; l++) {
                                 System.out.print(newGrid[k][l] + " ");
-
                             }
                             System.out.println();
                         }
@@ -98,10 +92,13 @@ public class AStar {
                         nodesOpened++;
                         openList.add(newNode);
                     }
-                    // check if the bottom move available, if so create new node
-                    if (i+1 <= 2 && i+1 >= 0){
-                        int[][] newGrid = Arrays.copyOf(parentNode.grid, parentNode.grid.length);
 
+                    // check if the bottom move available, if so create new node
+                    if (parentNode.coordinateYempty+1 <= 2 && parentNode.coordinateYempty+1 >= 0){
+
+                        int[][] newGrid = createNewGrid(parentNode.grid);
+
+                        System.out.println("bottom move");
                         for (int k = 0; k < parentNode.grid.length; k++) {
                             for (int l = 0; l < parentNode.grid.length; l++) {
                                 System.out.print(parentNode.grid[k][l] + " ");
@@ -109,8 +106,8 @@ public class AStar {
                             System.out.println();
                         }
 
-                        newGrid[i][j] = newGrid[i+1][j];
-                        newGrid[i+1][j] = 0;
+                        newGrid[parentNode.coordinateYempty][parentNode.coordinateXempty] = newGrid[parentNode.coordinateYempty+1][parentNode.coordinateXempty];
+                        newGrid[parentNode.coordinateYempty+1][parentNode.coordinateXempty] = 0;
 
                         for (int k = 0; k < newGrid.length; k++) {
                             for (int l = 0; l < newGrid.length; l++) {
@@ -124,34 +121,64 @@ public class AStar {
                         openList.add(newNode);
                     }
                     // check if the left move available, if so create new node
-                    if (j-1 <= 2 && j-1 >= 0){
+                    if (parentNode.coordinateXempty-1 <= 2 && parentNode.coordinateXempty-1 >= 0){
 
-                        int[][] newGrid = new int[3][3];
-                        System.arraycopy(parentNode.grid, 0, newGrid, 0, parentNode.grid.length);
+                        int[][] newGrid = createNewGrid(parentNode.grid);
 
-                        newGrid[i][j] = newGrid[i][j-1];
-                        newGrid[i][j-1] = 0;
+                        System.out.println("left move");
+
+                        for (int k = 0; k < newGrid.length; k++) {
+                            for (int l = 0; l < newGrid.length; l++) {
+                                System.out.print(newGrid[k][l] + " ");
+                            }
+                            System.out.println();
+                        }
+
+                        newGrid[parentNode.coordinateYempty][parentNode.coordinateXempty] = newGrid[parentNode.coordinateYempty][parentNode.coordinateXempty-1];
+                        newGrid[parentNode.coordinateYempty][parentNode.coordinateXempty-1] = 0;
+
+                        for (int k = 0; k < newGrid.length; k++) {
+                            for (int l = 0; l < newGrid.length; l++) {
+                                System.out.print(newGrid[k][l] + " ");
+                            }
+                            System.out.println();
+                        }
+
                         Node newNode = new Node(newGrid, misplacedTileHeuristic(newGrid), parentNode.g+1);
                         nodesOpened++;
                         openList.add(newNode);
                     }
                     // check if the right move available, if so create new node
-                    if (j+1 <= 2 && j+1 >= 0){
+                    if (parentNode.coordinateXempty+1 <= 2 && parentNode.coordinateXempty+1 >= 0){
 
-                        int[][] newGrid = new int[3][3];
-                        System.arraycopy(parentNode.grid, 0, newGrid, 0, parentNode.grid.length);
+                        int[][] newGrid = createNewGrid(parentNode.grid);
 
-                        newGrid[i][j] = newGrid[i][j+1];
-                        newGrid[i][j+1] = 0;
+                        System.out.println("right Move");
+
+                        newGrid[parentNode.coordinateYempty][parentNode.coordinateXempty] = newGrid[parentNode.coordinateYempty][parentNode.coordinateXempty+1];
+                        newGrid[parentNode.coordinateYempty][parentNode.coordinateXempty+1] = 0;
                         Node newNode = new Node(newGrid, misplacedTileHeuristic(newGrid), parentNode.g+1);
                         nodesOpened++;
                         openList.add(newNode);
                     }
-                }
+
 
 
         Collections.sort(openList);
         Collections.reverse(openList);
+    }
+
+    public int[][] createNewGrid(int[][] parentGrid) {
+
+        int[][] newGrid = new int[3][3];
+
+        for (int i = 0; i < parentGrid.length; i++){
+            for (int j = 0; j < parentGrid.length; j++){
+                newGrid[i][j] = parentGrid[i][j];
+            }
+        }
+
+        return newGrid;
     }
 
     public int misplacedTileHeuristic (int[][] currentGrid) {
