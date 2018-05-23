@@ -9,14 +9,13 @@ public class AStar {
 //            {1,2,7},
 //            {0,6,3}
 
-            {0,2,3},
-            {1,5,6},
-            {4,7,8}
+            {6,4,2},
+            {5,1,0},
+            {8,3,7}
 
 //            {1,2,3},
 //            {4,5,6},
 //            {7,8,0}
-
     };
 
     int[][] goalGrid = {
@@ -35,7 +34,9 @@ public class AStar {
     int nodesOpened = 1;
 
     public AStar() {
-        Node nodeStart = new Node(startGrid, misplacedTileHeuristic(startGrid), 0);
+//        Node emptyNode = new Node(startGrid, misplacedTileHeuristic(startGrid));
+
+        Node nodeStart = new Node(startGrid, misplacedTileHeuristic(startGrid));
         nodeStart.g = 0;
         nodeStart.h = misplacedTileHeuristic(nodeStart.grid);
         openList.add(nodeStart);
@@ -55,29 +56,31 @@ public class AStar {
     public void search() {
         while (openList.peek() != null) {
             // take the top Node from openlist
-            Node parentNode = openList.poll();
-//            openList.remove(0);
+            Node currentNode = openList.poll();
+            System.out.println("Below is the Current NODE");
+            printGrid(currentNode.grid);
+            System.out.println("F value = " + currentNode.f + " G: " + currentNode.g + " + H: " + currentNode.h);
 
-            System.out.println("Below is the PARENT NODE");
-            System.out.println(parentNode.grid[0][0]);
-            printGrid(parentNode.grid);
-            System.out.println("F value = " + parentNode.f + " G: " + parentNode.g + " + H: " + parentNode.h);
-
-            stringifyGrid(parentNode.grid);
-
-            if (Arrays.deepEquals(parentNode.grid, goalGrid)){
+            // If goal reached, end
+            if (Arrays.deepEquals(currentNode.grid, goalGrid)){
                 System.out.println("You have reached the goal");
                 System.out.println("You have opened: " + nodesOpened + " nodes.");
                 return;
             }
 
-            expandNode(parentNode);
-            closedList.put(stringifyGrid(parentNode.grid), parentNode);
+            System.out.println("Open list currently has: " + openList.size());
+
+            // Put expanded node in closedList.
+            closedList.put(stringifyGrid(currentNode.grid), currentNode);
+
+            // For all children nodes expand.
+            expandChildrenNodes(currentNode);
+
         }
         System.out.println("Failed to solve, Nodes opened: " + nodesOpened);
     }
 
-    public void expandNode(Node parentNode) {
+    public void expandChildrenNodes(Node parentNode) {
 
         //For loop through and check all neighbours of 0.
         // For each of these create a new node with grids with that neighbour
@@ -86,18 +89,20 @@ public class AStar {
                     // check if top move available, if so create new
                     if (parentNode.coordinateYempty-1 <= 2 && parentNode.coordinateYempty-1 >= 0){
 
+                        // Create new grid with old grid.
                         int[][] newGrid = createNewGrid(parentNode.grid);
 
 //                        System.out.println("top move");
 //                        printGrid(newGrid);
 
+                        // Apply move to change 0, with top tile.
                         newGrid[parentNode.coordinateYempty][parentNode.coordinateXempty] = newGrid[parentNode.coordinateYempty-1][parentNode.coordinateXempty];
                         newGrid[parentNode.coordinateYempty-1][parentNode.coordinateXempty] = 0;
 
 //                        printGrid(newGrid);
 
                         if (!closedList.containsKey(stringifyGrid(newGrid))) {
-                            Node newNode = new Node(newGrid, misplacedTileHeuristic(newGrid), parentNode.g+1);
+                            Node newNode = new Node(newGrid, misplacedTileHeuristic(newGrid), parentNode);
                             nodesOpened++;
                             openList.add(newNode);
                         }
@@ -117,7 +122,7 @@ public class AStar {
 //                        printGrid(newGrid);
 
                         if (!closedList.containsKey(stringifyGrid(newGrid))) {
-                            Node newNode = new Node(newGrid, misplacedTileHeuristic(newGrid), parentNode.g+1);
+                            Node newNode = new Node(newGrid, misplacedTileHeuristic(newGrid), parentNode);
                             nodesOpened++;
                             openList.add(newNode);
                         }
@@ -138,7 +143,7 @@ public class AStar {
 //                        printGrid(newGrid);
 
                         if (!closedList.containsKey(stringifyGrid(newGrid))) {
-                            Node newNode = new Node(newGrid, misplacedTileHeuristic(newGrid), parentNode.g+1);
+                            Node newNode = new Node(newGrid, misplacedTileHeuristic(newGrid), parentNode);
                             nodesOpened++;
                             openList.add(newNode);
                         }
@@ -157,7 +162,7 @@ public class AStar {
                         //                        printGrid(newGrid);
 
                         if (!closedList.containsKey(stringifyGrid(newGrid))) {
-                            Node newNode = new Node(newGrid, misplacedTileHeuristic(newGrid), parentNode.g+1);
+                            Node newNode = new Node(newGrid, misplacedTileHeuristic(newGrid), parentNode);
                             nodesOpened++;
                             openList.add(newNode);
                         }
@@ -187,16 +192,28 @@ public class AStar {
     }
 
     public int misplacedTileHeuristic (int[][] currentGrid) {
+
         int numberMisplaced = 0;
         for (int i = 0; i < currentGrid.length; i++){
             for (int j = 0; j < currentGrid.length; j++){
-                if (currentGrid[i][j] != goalGrid[i][j] && currentGrid[i][j] != 0){
+                if (currentGrid[i][j] != goalGrid[i][j]){
                     numberMisplaced++;
                 }
             }
         }
         return numberMisplaced;
     }
+
+    public int manhattanDistanceHeuristic (int[][] currentGrid) {
+        int heuristic = -1;
+
+
+
+
+        return heuristic;
+    }
+
+
 
     // This method turns String of Integers into a 2 dimensional array.
     public int[][] gridifyString(String stringGrid) {
