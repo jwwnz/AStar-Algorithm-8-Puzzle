@@ -11,7 +11,7 @@ public class Main {
         astar.search();
         System.out.println(astar.nodesOpened);
 
-        for(Node node : astar.closedList) System.out.println(node.f);
+//        for(Node node : astar.closedList) System.out.println(node.f);
 
     }
 }

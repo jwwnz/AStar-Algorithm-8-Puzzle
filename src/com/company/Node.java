@@ -37,6 +37,7 @@ public class Node implements Comparable<Node> {
 
     }
 
+    // Compare by f values, if f values the same then compare by h value
     @Override
     public int compareTo(Node o) {
         return Integer.compare(this.f, o.f);
