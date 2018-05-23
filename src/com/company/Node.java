@@ -1,14 +1,12 @@
 package com.company;
 
-import java.util.Arrays;
-
 public class Node implements Comparable<Node> {
     int[][] grid = new int[3][3];
     int h;
     int g;
     int f;
-    int coordinateYempty;
-    int coordinateXempty;
+    int zeroY;
+    int zeroX;
     Node parent;
 
 
@@ -20,8 +18,8 @@ public class Node implements Comparable<Node> {
         for (int i = 0; i < this.grid.length; i++) {
             for(int j = 0; j < this.grid.length; j++) {
                 if (this.grid[i][j] == 0) {
-                    coordinateYempty = i;
-                    coordinateXempty = j;
+                    zeroY = i;
+                    zeroX = j;
                 }
             }
         }
@@ -37,8 +35,8 @@ public class Node implements Comparable<Node> {
         for (int i = 0; i < this.grid.length; i++) {
             for(int j = 0; j < this.grid.length; j++) {
                 if (this.grid[i][j] == 0) {
-                    coordinateYempty = i;
-                    coordinateXempty = j;
+                    zeroY = i;
+                    zeroX = j;
                 }
             }
         }
@@ -50,9 +48,9 @@ public class Node implements Comparable<Node> {
     @Override
     public int compareTo(Node o) {
 
-        if (this.f == o.f) {
-            return Integer.compare(this.h, o.h);
-        }
+//        if (this.f == o.f) {
+//            return Integer.compare(this.h, o.h);
+//        }
 
         return Integer.compare(this.f, o.f);
     }
