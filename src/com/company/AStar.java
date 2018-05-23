@@ -5,9 +5,9 @@ import java.util.*;
 public class AStar {
 
     int[][] startGrid = {
-            {5,4,8},
-            {1,2,7},
-            {0,6,3}
+            {5, 4, 8},
+            {1, 2, 7},
+            {0, 6, 3}
 
 //            {1,2,3},
 //            {4,0,6},
@@ -24,10 +24,10 @@ public class AStar {
             {4, 5, 6},
             {7, 8, 0}
     };
-//    Node nodeGoal = new Node(goalGrid, misplacedTileHeuristic(goalGrid));
+    //    Node nodeGoal = new Node(goalGrid, misplacedTileHeuristic(goalGrid));
     Node nodeGoal = new Node(goalGrid, manhattanHeuristic(goalGrid));
 
-    PriorityQueue<Node> openList = new PriorityQueue<>((a,b) -> a.f - b.f);
+    PriorityQueue<Node> openList = new PriorityQueue<>((a, b) -> a.f - b.f);
     Hashtable<String, Node> closedList = new Hashtable<>();
     int nodesOpened = 1;
 
@@ -70,16 +70,62 @@ public class AStar {
             closedList.put(stringifyGrid(currentNode.grid), currentNode);
 
             // For all children nodes expand.
-            expandChildrenNodes(currentNode);
+//            expandChildrenNodes(currentNode);
 
+            // Expanding nodes top, bottom, left, right if move possible.
+            if (currentNode.zeroY - 1 >= 0) {
+                expandSingleChildNode(currentNode, "top");
+            }
+            if (currentNode.zeroY + 1 <= 2) {
+                expandSingleChildNode(currentNode, "bottom");
+            }
+            if (currentNode.zeroX - 1 >= 0) {
+                expandSingleChildNode(currentNode, "left");
+            }
+            if (currentNode.zeroX + 1 <= 2) {
+                expandSingleChildNode(currentNode, "right");
+            }
         }
         System.out.println("Failed to solve, Nodes opened: " + nodesOpened);
+    }
+
+    public void expandSingleChildNode(Node parentNode, String direction) {
+
+        int newY = parentNode.zeroY;
+        int newX = parentNode.zeroX;
+
+        switch (direction) {
+            case "top":
+                newY--;
+                break;
+            case "bottom":
+                newY++;
+                break;
+            case "left":
+                newX--;
+                break;
+            case "right":
+                newX++;
+        }
+
+        // Create new grid with old grid.
+        int[][] newGrid = createNewGrid(parentNode.grid);
+
+        // Apply move to change 0, with top tile.
+        newGrid[parentNode.zeroY][parentNode.zeroX] = newGrid[newY][newX];
+        newGrid[newY][newX] = 0;
+
+        if (!closedList.containsKey(stringifyGrid(newGrid))) {
+            Node newNode = new Node(newGrid, manhattanHeuristic(newGrid), parentNode);
+            nodesOpened++;
+            openList.add(newNode);
+        }
     }
 
     public void expandChildrenNodes(Node parentNode) {
 
         // check if top move available, if so create new
-        if (parentNode.zeroY - 1 <= 2 && parentNode.zeroY - 1 >= 0) {
+        if (parentNode.zeroY - 1 >= 0) {
 
             // Create new grid with old grid.
             int[][] newGrid = createNewGrid(parentNode.grid);
@@ -96,7 +142,7 @@ public class AStar {
         }
 
         // check if the bottom move available, if so create new node
-        if (parentNode.zeroY + 1 <= 2 && parentNode.zeroY + 1 >= 0) {
+        if (parentNode.zeroY + 1 <= 2) {
 
             int[][] newGrid = createNewGrid(parentNode.grid);
 
@@ -111,7 +157,7 @@ public class AStar {
 
         }
         // check if the left move available, if so create new node
-        if (parentNode.zeroX - 1 <= 2 && parentNode.zeroX - 1 >= 0) {
+        if (parentNode.zeroX - 1 >= 0) {
 
             int[][] newGrid = createNewGrid(parentNode.grid);
             newGrid[parentNode.zeroY][parentNode.zeroX] = newGrid[parentNode.zeroY][parentNode.zeroX - 1];
@@ -124,7 +170,7 @@ public class AStar {
             }
         }
         // check if the right move available, if so create new node
-        if (parentNode.zeroX + 1 <= 2 && parentNode.zeroX + 1 >= 0) {
+        if (parentNode.zeroX + 1 <= 2) {
 
             int[][] newGrid = createNewGrid(parentNode.grid);
             newGrid[parentNode.zeroY][parentNode.zeroX] = newGrid[parentNode.zeroY][parentNode.zeroX + 1];
