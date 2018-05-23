@@ -70,7 +70,6 @@ public class AStar {
             closedList.put(stringifyGrid(currentNode.grid), currentNode);
 
             // For all children nodes expand.
-//            expandChildrenNodes(currentNode);
 
             // Expanding nodes top, bottom, left, right if move possible.
             if (currentNode.zeroY - 1 >= 0) {
@@ -119,68 +118,6 @@ public class AStar {
             Node newNode = new Node(newGrid, manhattanHeuristic(newGrid), parentNode);
             nodesOpened++;
             openList.add(newNode);
-        }
-    }
-
-    public void expandChildrenNodes(Node parentNode) {
-
-        // check if top move available, if so create new
-        if (parentNode.zeroY - 1 >= 0) {
-
-            // Create new grid with old grid.
-            int[][] newGrid = createNewGrid(parentNode.grid);
-
-            // Apply move to change 0, with top tile.
-            newGrid[parentNode.zeroY][parentNode.zeroX] = newGrid[parentNode.zeroY - 1][parentNode.zeroX];
-            newGrid[parentNode.zeroY - 1][parentNode.zeroX] = 0;
-
-            if (!closedList.containsKey(stringifyGrid(newGrid))) {
-                Node newNode = new Node(newGrid, manhattanHeuristic(newGrid), parentNode);
-                nodesOpened++;
-                openList.add(newNode);
-            }
-        }
-
-        // check if the bottom move available, if so create new node
-        if (parentNode.zeroY + 1 <= 2) {
-
-            int[][] newGrid = createNewGrid(parentNode.grid);
-
-            newGrid[parentNode.zeroY][parentNode.zeroX] = newGrid[parentNode.zeroY + 1][parentNode.zeroX];
-            newGrid[parentNode.zeroY + 1][parentNode.zeroX] = 0;
-
-            if (!closedList.containsKey(stringifyGrid(newGrid))) {
-                Node newNode = new Node(newGrid, manhattanHeuristic(newGrid), parentNode);
-                nodesOpened++;
-                openList.add(newNode);
-            }
-
-        }
-        // check if the left move available, if so create new node
-        if (parentNode.zeroX - 1 >= 0) {
-
-            int[][] newGrid = createNewGrid(parentNode.grid);
-            newGrid[parentNode.zeroY][parentNode.zeroX] = newGrid[parentNode.zeroY][parentNode.zeroX - 1];
-            newGrid[parentNode.zeroY][parentNode.zeroX - 1] = 0;
-
-            if (!closedList.containsKey(stringifyGrid(newGrid))) {
-                Node newNode = new Node(newGrid, manhattanHeuristic(newGrid), parentNode);
-                nodesOpened++;
-                openList.add(newNode);
-            }
-        }
-        // check if the right move available, if so create new node
-        if (parentNode.zeroX + 1 <= 2) {
-
-            int[][] newGrid = createNewGrid(parentNode.grid);
-            newGrid[parentNode.zeroY][parentNode.zeroX] = newGrid[parentNode.zeroY][parentNode.zeroX + 1];
-            newGrid[parentNode.zeroY][parentNode.zeroX + 1] = 0;
-
-            if (!closedList.containsKey(stringifyGrid(newGrid))) {
-                Node newNode = new Node(newGrid, manhattanHeuristic(newGrid), parentNode);
-                nodesOpened++;
-                openList.add(newNode);
-            }
         }
     }
 
