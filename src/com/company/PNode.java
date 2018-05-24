@@ -1,12 +1,14 @@
 package com.company;
 
-public class PNode implements Comparable<PNode> {
+public class PNode {
 
     String state;
     String goalState = "123456780";
+    int epsilon = 1;
     int costG;
     int costH;
     int costF;
+    int costP;
     PNode parentNode;
 
     //  Constructor to create Initial node:
@@ -14,9 +16,10 @@ public class PNode implements Comparable<PNode> {
         this.state = state;
         this.costG = costG;
 //        this.costH = misplacedHeuristic();
-//        this.costH = manhattanHeuristic(0);
-                this.costH = manhattanHeuristic(-1);
+        this.costH = manhattanHeuristic(0);
+//                this.costH = manhattanHeuristic(1);
         this.costF = costG + costH;
+        this.costP = Math.max(this.costG + epsilon, this.costF);
     }
 
     public int manhattanHeuristic(int minus){
@@ -34,7 +37,7 @@ public class PNode implements Comparable<PNode> {
                 costH += Math.abs(retrieveX(i) - retrieveX(goalIndex));
             }
         }
-        return Math.max(costH - minus, 0);
+        return Math.max(0, costH - minus);
     }
 
     public int misplacedHeuristic() {
@@ -61,25 +64,16 @@ public class PNode implements Comparable<PNode> {
         else return 2;
     }
 
-    // If compared, the lower F-cost is first
-    @Override
-    public int compareTo(PNode o) {
-
-//        if (this.costF < o.costF){
-//            return 1;
-//        } else if (this.costF > o.costF) {
-//            return -1;
-//        } else if (this.costH < o.costH) {
-//            return 1;
+//    // If compared, the lower F-cost is first
+//    @Override
+//    public int compareTo(PNode o) {
+//
+//        if (this.costF == o.costF) {
+//            if(this.costH == o.costH){
+//                return Integer.compare(this.costG, o.costG);
+//            }
+//            return Integer.compare(this.costH, o.costH);
 //        }
-//        return 0;
-
-        if (this.costF == o.costF) {
-            if(this.costH == o.costH){
-                return Integer.compare(this.costG, o.costG);
-            }
-            return Integer.compare(this.costH, o.costH);
-        }
-        return Integer.compare(this.costF, o.costF);
-    }
+//        return Integer.compare(this.costF, o.costF);
+//    }
 }

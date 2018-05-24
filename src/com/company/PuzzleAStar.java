@@ -1,5 +1,6 @@
 package com.company;
 
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.PriorityQueue;
@@ -9,8 +10,22 @@ public class PuzzleAStar {
     String goalState = "123456780";
     PNode nodeCurrent;
     int expandedNodes = 0;
+    int generatedNodes = 0;
 
-    PriorityQueue<PNode> openList = new PriorityQueue<>();
+    Comparator<PNode> comparator = new Comparator<PNode>() {
+        @Override
+        public int compare(PNode o1, PNode o2) {
+            if (o1.costF == o2.costF) {
+//                if(o1.costH == o2.costH){
+//                    return Integer.compare(o1.costG, o2.costG);
+//                }
+                return Integer.compare(o1.costH, o2.costH);
+            }
+            return Integer.compare(o1.costF, o2.costF);
+        }
+    };
+
+    PriorityQueue<PNode> openList = new PriorityQueue<>(comparator);
     HashMap<String, PNode> closedList = new HashMap<>();
 
     // Setup new Puzzle and starting node to openList.
@@ -30,8 +45,7 @@ public class PuzzleAStar {
             System.out.println("Current Node H-level: " + nodeCurrent.costH);
 
             if(nodeCurrent.state.equals(goalState)){
-                System.out.println("NAILED IT");
-                System.out.println("Nodes expanded: " + expandedNodes);
+                finishedOutput();
                 return;
             }
 
@@ -71,6 +85,9 @@ public class PuzzleAStar {
     }
 
     public void generateSuccessor(String newState, int parentCostG) {
+
+        generatedNodes++;
+
         // create a new Node (nodeSuccessor).
         PNode nodeSuccessor = new PNode(newState, parentCostG + 1);
 //        System.out.println("G cost: " + nodeSuccessor.costG);
@@ -114,5 +131,12 @@ public class PuzzleAStar {
         charSet[indexZero + moveZeroBy] = '0';
 
         return new String(charSet);
+    }
+
+    public void finishedOutput() {
+        System.out.println("Reached Goalstate!");
+        System.out.println("Nodes expanded: " + expandedNodes);
+        System.out.println("Nodes generated: " + generatedNodes);
+        System.exit(0);
     }
 }

@@ -37,8 +37,12 @@ public class Main {
 
 //        System.out.println(parser.parseThis("035162874"));
         long timeFirst = System.nanoTime();
-        PuzzleAStar myAStar = new PuzzleAStar("382065714");
-        myAStar.search();
+//        PuzzleAStar myAStar = new PuzzleAStar("382065714");
+//        myAStar.search();
+
+        PuzzleASharp myASharp = new PuzzleASharp("382065714");
+        myASharp.search();
+
         long timeSecond = System.nanoTime() - timeFirst;
 
         double inSeconds = TimeUnit.MILLISECONDS.convert(timeSecond, TimeUnit.NANOSECONDS);

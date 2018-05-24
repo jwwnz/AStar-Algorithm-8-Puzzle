@@ -1,16 +1,28 @@
 package com.company;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.PriorityQueue;
+import java.util.*;
 
 public class PuzzleASharp {
 
     String goalState = "123456780";
     PNode nodeCurrent;
     int expandedNodes = 0;
+    int generatedNodes = 0;
 
-    PriorityQueue<PNode> openList = new PriorityQueue<>();
+    Comparator<PNode> comparator = new Comparator<PNode>() {
+        @Override
+        public int compare(PNode o1, PNode o2) {
+            if (o1.costP == o2.costP) {
+//                if(o1.costH == o2.costH){
+//                    return Integer.compare(o1.costG, o2.costG);
+//                }
+                return Integer.compare(o1.costH, o2.costH);
+            }
+            return Integer.compare(o1.costP, o2.costP);
+        }
+    };
+
+    PriorityQueue<PNode> openList = new PriorityQueue<>(comparator);
     HashMap<String, PNode> closedList = new HashMap<>();
 
     // Setup new Puzzle and starting node to openList.
@@ -29,14 +41,14 @@ public class PuzzleASharp {
             System.out.println("Current Node H-level: " + nodeCurrent.costH);
 
             if(nodeCurrent.state.equals(goalState)){
-                System.out.println("NAILED IT");
-                System.out.println("Nodes expanded: " + expandedNodes);
+                finishedOutput();
                 return;
             }
 
-            expandedNodes++;
             System.out.println("Expanded nodes currently: "+ expandedNodes);
             expandNode(nodeCurrent);
+            expandedNodes++;
+
         }
     }
 
@@ -65,15 +77,20 @@ public class PuzzleASharp {
         }
 
         closedList.put(nodeCurrent.state, nodeCurrent);
-
-
     }
 
     public void generateSuccessor(String newState, int parentCostG) {
+
+        generatedNodes++;
+
+        // A# Termination #1: if newState of nodeSuccessor equals to goalState finish output!
+        if (newState.equals(goalState)) {
+            System.out.println("A# helped");
+            finishedOutput();
+//            return;
+        }
         // create a new Node (nodeSuccessor).
         PNode nodeSuccessor = new PNode(newState, parentCostG + 1);
-//        System.out.println("G cost: " + nodeSuccessor.costG);
-//        System.out.println("F cost: " + nodeSuccessor.costF);
 
         // check if openList contains this new State?
         Iterator<PNode> iter = openList.iterator();
@@ -114,4 +131,12 @@ public class PuzzleASharp {
 
         return new String(charSet);
     }
+
+    public void finishedOutput() {
+        System.out.println("Reached Goalstate!");
+        System.out.println("Nodes expanded: " + expandedNodes);
+        System.out.println("Nodes generated: " + generatedNodes);
+        System.exit(0);
+    }
+
 }
