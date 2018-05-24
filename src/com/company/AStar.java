@@ -4,15 +4,19 @@ import java.util.*;
 
 public class AStar {
 
-    int[][] startGrid = {
-            {5, 4, 8},
-            {1, 2, 7},
-            {0, 6, 3}
+    int[][] startGrid;
 
-//            {1,2,3},
-//            {4,0,6},
-//            {7,5,8}
-    };
+//    int[][] startGrid =
+//
+//            {
+//                    {2, 3, 0},
+//                    {5, 6, 4},
+//                    {8, 7, 1}
+//
+////            {1, 2, 3},
+////            {4, 5, 6},
+////            {7, 0, 8}
+//            };
 
     int[][] goalGrid = {
 
@@ -27,32 +31,25 @@ public class AStar {
     //    Node nodeGoal = new Node(goalGrid, misplacedTileHeuristic(goalGrid));
     Node nodeGoal = new Node(goalGrid, manhattanHeuristic(goalGrid));
 
-    PriorityQueue<Node> openList = new PriorityQueue<>((a, b) -> a.f - b.f);
+    PriorityQueue<Node> openList = new PriorityQueue<>();
     Hashtable<String, Node> closedList = new Hashtable<>();
     int nodesOpened = 1;
 
     public AStar() {
+        startGrid = gridifyString("632510874");
+
         Node nodeStart = new Node(startGrid, manhattanHeuristic(startGrid));
         nodeStart.g = 0;
         nodeStart.h = manhattanHeuristic(nodeStart.grid);
         openList.add(nodeStart);
     }
 
-    // This method turns 2 dimensional array into a String of Integers.
-    public String stringifyGrid(int[][] grid) {
-        String convertedString = "";
-        for (int i = 0; i < grid.length; i++) {
-            for (int j = 0; j < grid.length; j++) {
-                convertedString += grid[i][j];
-            }
-        }
-        return convertedString;
-    }
-
     public void search() {
+
         while (openList.peek() != null) {
             // take the top Node from openlist
             Node currentNode = openList.poll();
+
             System.out.println("Below is the Current NODE");
             printGrid(currentNode.grid);
             System.out.println("F value = " + currentNode.f + " G: " + currentNode.g + " + H: " + currentNode.h);
@@ -66,12 +63,15 @@ public class AStar {
 
             System.out.println("Open list currently has: " + openList.size());
 
+            currentNode.g++;
+            currentNode.f = currentNode.g + currentNode.h;
+            System.out.println("F value = " + currentNode.f + " G: " + currentNode.g + " + H: " + currentNode.h);
+
             // Put expanded node in closedList.
-            closedList.put(stringifyGrid(currentNode.grid), currentNode);
+            closedList.put(currentNode.stringifyGrid(currentNode.grid), currentNode);
 
             // For all children nodes expand.
-
-            // Expanding nodes top, bottom, left, right if move possible.
+            // Expanding nodes top, bottom, left, right if move possible, and add them to openlist
             if (currentNode.zeroY - 1 >= 0) {
                 expandSingleChildNode(currentNode, "top");
             }
@@ -84,6 +84,7 @@ public class AStar {
             if (currentNode.zeroX + 1 <= 2) {
                 expandSingleChildNode(currentNode, "right");
             }
+
         }
         System.out.println("Failed to solve, Nodes opened: " + nodesOpened);
     }
@@ -114,8 +115,21 @@ public class AStar {
         newGrid[parentNode.zeroY][parentNode.zeroX] = newGrid[newY][newX];
         newGrid[newY][newX] = 0;
 
-        if (!closedList.containsKey(stringifyGrid(newGrid))) {
-            Node newNode = new Node(newGrid, manhattanHeuristic(newGrid), parentNode);
+        Node newNode = new Node(newGrid, manhattanHeuristic(newGrid), parentNode);
+
+        // If node with same position exists on Open list with a lower F value skip it
+        for (Node node : openList) {
+            if (node.stringGrid.equals(newNode.stringGrid) && node.f < newNode.f) {
+                return;
+            }
+        }
+
+        if (closedList.get(newNode.stringGrid) != null && closedList.get(newNode.stringGrid).g > newNode.g) {
+            closedList.put(newNode.stringGrid, newNode);
+            return;
+        }
+
+        if (!closedList.containsKey(newNode.stringifyGrid(newGrid)) || closedList.get(newNode.stringGrid).f < newNode.f) {
             nodesOpened++;
             openList.add(newNode);
         }
@@ -162,6 +176,8 @@ public class AStar {
 
         for (int i = 0; i < currentGrid.length; i++) {
             for (int j = 0; j < currentGrid.length; j++) {
+
+                if (currentGrid[i][j] == 0) continue;
                 manHattanDistance += manhattanPerTile(i, j, calculateGoalY(currentGrid[i][j]), calculateGoalX(currentGrid[i][j]));
             }
         }
@@ -195,13 +211,11 @@ public class AStar {
         }
     }
 
-
     public int manhattanPerTile(int currentY, int currentX, int goalY, int goalX) {
 
         // Algorithm to finding manhattan distance: abs(currentX - goalX) + abs(currentY- goalY)
         return Math.abs(currentY - goalY) + Math.abs(currentX - goalX);
     }
-
 
     // This method turns String of Integers into a 2 dimensional array.
     public int[][] gridifyString(String stringGrid) {
@@ -221,5 +235,16 @@ public class AStar {
         }
         return convertedGrid;
     }
+
+//    // This method turns 2 dimensional array into a String of Integers.
+//    public String stringifyGrid(int[][] grid) {
+//        String convertedString = "";
+//        for (int i = 0; i < grid.length; i++) {
+//            for (int j = 0; j < grid.length; j++) {
+//                convertedString += grid[i][j];
+//            }
+//        }
+//        return convertedString;
+//    }
 
 }
