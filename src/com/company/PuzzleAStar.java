@@ -7,18 +7,15 @@ import java.util.PriorityQueue;
 
 public class PuzzleAStar {
 
-    String goalState = "123456780";
-    PNode nodeCurrent;
-    int expandedNodes = 0;
-    int generatedNodes = 0;
+    private String goalState = "123456780";
+    private PNode nodeCurrent;
+    private int expandedNodes = 0;
+    private int generatedNodes = 0;
 
-    Comparator<PNode> comparator = new Comparator<PNode>() {
+    private Comparator<PNode> comparator = new Comparator<PNode>() {
         @Override
         public int compare(PNode o1, PNode o2) {
             if (o1.costF == o2.costF) {
-//                if(o1.costH == o2.costH){
-//                    return Integer.compare(o1.costG, o2.costG);
-//                }
                 return Integer.compare(o1.costH, o2.costH);
             }
             return Integer.compare(o1.costF, o2.costF);

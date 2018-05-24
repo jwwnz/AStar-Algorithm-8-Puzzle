@@ -4,18 +4,16 @@ import java.util.*;
 
 public class PuzzleASharp {
 
-    String goalState = "123456780";
-    PNode nodeCurrent;
-    int expandedNodes = 0;
-    int generatedNodes = 0;
+    private String goalState = "123456780";
+    private PNode nodeCurrent;
+    private int expandedNodes = 0;
+    private int generatedNodes = 0;
 
-    Comparator<PNode> comparator = new Comparator<PNode>() {
+    private Comparator<PNode> comparator = new Comparator<PNode>() {
         @Override
         public int compare(PNode o1, PNode o2) {
+            // ASharp algorithm differentiator #2: sorts openList by P-cost ( max(G-cost + 1, F-cost) )
             if (o1.costP == o2.costP) {
-//                if(o1.costH == o2.costH){
-//                    return Integer.compare(o1.costG, o2.costG);
-//                }
                 return Integer.compare(o1.costH, o2.costH);
             }
             return Integer.compare(o1.costP, o2.costP);
@@ -48,7 +46,6 @@ public class PuzzleASharp {
             System.out.println("Expanded nodes currently: "+ expandedNodes);
             expandNode(nodeCurrent);
             expandedNodes++;
-
         }
     }
 
