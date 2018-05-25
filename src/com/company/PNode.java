@@ -63,17 +63,4 @@ public class PNode {
         else if (index == 1 || index == 4 || index == 7) return 1;
         else return 2;
     }
-
-//    // If compared, the lower F-cost is first
-//    @Override
-//    public int compareTo(PNode o) {
-//
-//        if (this.costF == o.costF) {
-//            if(this.costH == o.costH){
-//                return Integer.compare(this.costG, o.costG);
-//            }
-//            return Integer.compare(this.costH, o.costH);
-//        }
-//        return Integer.compare(this.costF, o.costF);
-//    }
 }

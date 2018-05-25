@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.PriorityQueue;
 
-public class PuzzleAStar {
+public class PuzzleAStar extends PuzzleSolver {
 
     private String goalState = "123456780";
     private PNode nodeCurrent;
@@ -22,8 +22,8 @@ public class PuzzleAStar {
         }
     };
 
-    PriorityQueue<PNode> openList = new PriorityQueue<>(comparator);
-    HashMap<String, PNode> closedList = new HashMap<>();
+    private PriorityQueue<PNode> openList = new PriorityQueue<>(comparator);
+    private HashMap<String, PNode> closedList = new HashMap<>();
 
     // Setup new Puzzle and starting node to openList.
     public PuzzleAStar(String startState) {
@@ -38,8 +38,8 @@ public class PuzzleAStar {
             // Take best Node from open list (lowest F value)
 
             nodeCurrent = openList.poll();
-            System.out.println("Current Node F-level: " + nodeCurrent.costF);
-            System.out.println("Current Node H-level: " + nodeCurrent.costH);
+//            System.out.println("Current Node F-level: " + nodeCurrent.costF);
+//            System.out.println("Current Node H-level: " + nodeCurrent.costH);
 
             if(nodeCurrent.state.equals(goalState)){
                 finishedOutput();
@@ -47,12 +47,12 @@ public class PuzzleAStar {
             }
 
             expandedNodes++;
-            System.out.println("Expanded nodes currently: "+ expandedNodes);
+//            System.out.println("Expanded nodes currently: "+ expandedNodes);
             expandNode(nodeCurrent);
         }
     }
 
-    public void expandNode(PNode nodeCurrent) {
+    private void expandNode(PNode nodeCurrent) {
         // find possible node expansions (up, down, left, right).
         // generator successor if expansion possible.
         int index0 = nodeCurrent.state.indexOf('0');
@@ -75,13 +75,10 @@ public class PuzzleAStar {
         if (index0 != 2 && index0 != 5 && index0 != 8){
             generateSuccessor(updateState(nodeCurrent.state, index0, moveZeroBy + 1), currentCostG);
         }
-
         closedList.put(nodeCurrent.state, nodeCurrent);
-
-
     }
 
-    public void generateSuccessor(String newState, int parentCostG) {
+    private void generateSuccessor(String newState, int parentCostG) {
 
         generatedNodes++;
 
@@ -118,7 +115,7 @@ public class PuzzleAStar {
         openList.add(nodeSuccessor);
     }
 
-    public String updateState(String currentState, int indexZero, int moveZeroBy){
+    private String updateState(String currentState, int indexZero, int moveZeroBy){
         // Change state by swapping around 0 value with move
         char movedChar = currentState.charAt(indexZero + moveZeroBy);
 
@@ -130,10 +127,11 @@ public class PuzzleAStar {
         return new String(charSet);
     }
 
-    public void finishedOutput() {
+    private void finishedOutput() {
         System.out.println("Reached Goalstate!");
+        System.out.println("Final F-level: " + nodeCurrent.costF);
+        System.out.println("Final H-level: " + nodeCurrent.costH);
         System.out.println("Nodes expanded: " + expandedNodes);
         System.out.println("Nodes generated: " + generatedNodes);
-        System.exit(0);
     }
 }

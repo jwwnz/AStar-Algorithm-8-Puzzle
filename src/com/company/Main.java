@@ -13,40 +13,15 @@ public class Main {
 
     public static void main(String[] args) {
 
-//        Parser parser = new Parser();
-//        BufferedReader reader;
-//        List<Node> nodes;
-//        try {
-//            reader = new BufferedReader(new java.io.FileReader("25.pl"));
-//            String line = "";
-//            while ((line = reader.readLine()) != null){
-//                Pattern pattern = Pattern.compile("( \\d+)");
-//                Matcher matcher = pattern.matcher(line);
-//
-//                if (matcher.find()) {
-////                    System.out.println(matcher.group().trim());
-//                    System.out.println(parser.parseThis(matcher.group().trim()));
-//                }
-//            }
-//
-//        } catch (FileNotFoundException e) {
-//            e.printStackTrace();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-
 //        System.out.println(parser.parseThis("035162874"));
-        long timeFirst = System.nanoTime();
-//        PuzzleAStar myAStar = new PuzzleAStar("382065714");
-//        myAStar.search();
 
-        PuzzleASharp myASharp = new PuzzleASharp("382065714");
-        myASharp.search();
+        new FileReader().readFile("10.pl");
 
-        long timeSecond = System.nanoTime() - timeFirst;
+        System.out.println("-----------------------");
+        System.out.println("12 PL");
+        new FileReader().readFile("25.pl");
 
-        double inSeconds = TimeUnit.MILLISECONDS.convert(timeSecond, TimeUnit.NANOSECONDS);
-        System.out.println(inSeconds);
+
     }
 }
 

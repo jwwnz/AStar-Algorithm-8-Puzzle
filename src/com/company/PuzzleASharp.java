@@ -2,30 +2,33 @@ package com.company;
 
 import java.util.*;
 
-public class PuzzleASharp {
+public class PuzzleASharp extends PuzzleSolver {
 
     private String goalState = "123456780";
     private PNode nodeCurrent;
     private int expandedNodes = 0;
     private int generatedNodes = 0;
+    private int evaluatedNodes = 0;
+    private boolean finished = false;
 
     private Comparator<PNode> comparator = new Comparator<PNode>() {
         @Override
         public int compare(PNode o1, PNode o2) {
             // ASharp algorithm differentiator #2: sorts openList by P-cost ( max(G-cost + 1, F-cost) )
-            if (o1.costP == o2.costP) {
-                return Integer.compare(o1.costH, o2.costH);
-            }
+//            if (o1.costP == o2.costP) {
+//                return Integer.compare(o1.costH, o2.costH);
+//            }
             return Integer.compare(o1.costP, o2.costP);
         }
     };
 
-    PriorityQueue<PNode> openList = new PriorityQueue<>(comparator);
-    HashMap<String, PNode> closedList = new HashMap<>();
+    private PriorityQueue<PNode> openList = new PriorityQueue<>(comparator);
+    private HashMap<String, PNode> closedList = new HashMap<>();
 
     // Setup new Puzzle and starting node to openList.
     public PuzzleASharp(String startState) {
         PNode startNode = new PNode(startState, 0);
+        evaluatedNodes++;
         openList.add(startNode);
     }
 
@@ -35,21 +38,29 @@ public class PuzzleASharp {
             // Take best Node from open list (lowest F value)
 
             nodeCurrent = openList.poll();
-            System.out.println("Current Node F-level: " + nodeCurrent.costF);
-            System.out.println("Current Node H-level: " + nodeCurrent.costH);
+//            System.out.println("Current Node F-level: " + nodeCurrent.costF);
+//            System.out.println("Current Node H-level: " + nodeCurrent.costH);
 
             if(nodeCurrent.state.equals(goalState)){
                 finishedOutput();
                 return;
             }
 
-            System.out.println("Expanded nodes currently: "+ expandedNodes);
+//            System.out.println("Expanded nodes currently: "+ expandedNodes);
             expandNode(nodeCurrent);
+            // If Neighbours state satisfied Goal then exit
+            if (finished){
+                finishedOutput();
+                return;
+            }
+
             expandedNodes++;
+
+
         }
     }
 
-    public void expandNode(PNode nodeCurrent) {
+    private void expandNode(PNode nodeCurrent) {
         // find possible node expansions (up, down, left, right).
         // generator successor if expansion possible.
         int index0 = nodeCurrent.state.indexOf('0');
@@ -76,25 +87,25 @@ public class PuzzleASharp {
         closedList.put(nodeCurrent.state, nodeCurrent);
     }
 
-    public void generateSuccessor(String newState, int parentCostG) {
+    private void generateSuccessor(String newState, int parentCostG) {
 
         generatedNodes++;
 
-        // A# Termination #1: if newState of nodeSuccessor equals to goalState finish output!
+        // A# differentiator #1: if newState of nodeSuccessor equals to goalState finish output!
         if (newState.equals(goalState)) {
             System.out.println("A# helped");
-            finishedOutput();
-//            return;
+            this.finished = true;
+            return;
         }
         // create a new Node (nodeSuccessor).
         PNode nodeSuccessor = new PNode(newState, parentCostG + 1);
+        evaluatedNodes++;
 
         // check if openList contains this new State?
         Iterator<PNode> iter = openList.iterator();
 
         while (iter.hasNext()) {
             PNode node = iter.next();
-
             // if the nodeSuccessor is on the openList BUT if existing is just as good then discard
             if (node.state.equals(newState) && node.costF <= nodeSuccessor.costF) {
                 return;
@@ -117,7 +128,7 @@ public class PuzzleASharp {
         openList.add(nodeSuccessor);
     }
 
-    public String updateState(String currentState, int indexZero, int moveZeroBy){
+    private String updateState(String currentState, int indexZero, int moveZeroBy){
         // Change state by swapping around 0 value with move
         char movedChar = currentState.charAt(indexZero + moveZeroBy);
 
@@ -129,11 +140,14 @@ public class PuzzleASharp {
         return new String(charSet);
     }
 
-    public void finishedOutput() {
+    private void finishedOutput() {
         System.out.println("Reached Goalstate!");
+        System.out.println("Final F-level: " + nodeCurrent.costF);
+        System.out.println("Final H-level: " + nodeCurrent.costH);
         System.out.println("Nodes expanded: " + expandedNodes);
         System.out.println("Nodes generated: " + generatedNodes);
-        System.exit(0);
+        System.out.println("Nodes evaluated: " + evaluatedNodes);
+        return;
     }
 
 }
