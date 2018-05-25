@@ -1,12 +1,12 @@
-#A Star v A# the application
+# A Star v A# the application
 
-##Quick overview
+## Quick overview
 This is a Java application which was build as part of an experiment
 to see whether we can improve the node expansion 
 optimality of A Star by including small information that we know about the problem
 domain.
 
-####The Algorithm #A
+#### The Algorithm #A
 This new algorithm A# is a state of the art algorithm developed by Mike
 Barley and the Computer Science Department at the University of Auckland.
 
@@ -21,7 +21,7 @@ found in the accompanying report.
 The purpose of this Readme file is to give a quick overview as to how to initiate
 and run this
 
-##Instructions to run the experiment
+## Instructions to run the experiment
 
 The classes within this package is self-contained to run the experiment.
 
@@ -36,7 +36,7 @@ lengths for all problems inside of a specific problem set (Eg. the exemplar ones
 are using 10 and 25).
 Please keep this in mind when running any subsequent experiments.
 
-###To change the problem files
+### To change the problem files
 
 In the Main class, specify the location of the file and problem length (optimal path length)
 of your specified problem set.
@@ -46,7 +46,7 @@ parameters in the Main class:
 1. fileLocation: specify the location of the problem set file.
 2. problemLength: specify the problemLength of your problem set.
 
-###To specify any new heuristics 
+### To specify any new heuristics 
 
 Currently we have implemented three heuristics (set up as classes):
 1. Manhattan.
