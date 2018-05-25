@@ -21,6 +21,17 @@ found in the accompanying report.
 The purpose of this Readme file is to give a quick overview as to how to initiate
 and run this
 
+## The code
+The code for both A# and A star has been coded from pseudocode and no existing code
+has been used.
+
+A Star and A# is identical except for the two tweaks mentioned above.
+
+Given the extensive coding required, detailed comments have been written into the code to explain exactly how it 
+has been designed for both A Star and A Sharp.
+
+The key differences in the algorithm is shown in the Puzzle ASharp
+
 ## Instructions to run the experiment
 
 The classes within this package is self-contained to run the experiment.

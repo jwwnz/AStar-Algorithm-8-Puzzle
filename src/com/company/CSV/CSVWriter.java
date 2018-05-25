@@ -24,9 +24,9 @@ public class CSVWriter {
         this.listOfHeaders.add("Optimal sol cost");
 
         for (int i = 0; i <= problemLength; i++){
-            this.listOfHeaders.add("Level " + i + " nodes Generated");
-            this.listOfHeaders.add("Level " + i + " nodes Expanded");
-            this.listOfHeaders.add("Level " + i + " nodes Evaluated");
+            this.listOfHeaders.add("Nodes Generated Level " + i);
+            this.listOfHeaders.add("Nodes Expanded Level " + i);
+            this.listOfHeaders.add("Nodes Evaluated Level " + i);
         }
 
         this.listOfHeaders.add("Total nodes Generated");
