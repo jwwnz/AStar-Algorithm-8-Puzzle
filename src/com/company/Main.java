@@ -20,11 +20,11 @@ public class Main {
         CSVWriter newWriter = new CSVWriter(10);
         newWriter.setupCSVWriter();
 
-//        new FileReader().readFile("10.pl");
+        new FileReader().readFile("10.pl", 10);
 //
 //        System.out.println("-----------------------");
 //        System.out.println("25 PL");
-//        new FileReader().readFile("25.pl");
+        new FileReader().readFile("25.pl", 25);
 
 
     }

@@ -2,19 +2,19 @@ package com.company;
 
 import com.company.heuristics.Heuristic;
 
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.PriorityQueue;
+import java.util.*;
 
 public class PuzzleAStar extends PuzzleSolver {
 
+    public String startState;
     private String goalState = "123456780";
     private PNode nodeCurrent;
     private int expandedNodes = 0;
     private int generatedNodes = 0;
     private int evaluatedNodes = 0;
+    public String solverName = "A Star";
     public Heuristic heuristicUsed;
+    public int level;
 
     private Comparator<PNode> comparator = new Comparator<PNode>() {
         @Override
@@ -31,32 +31,49 @@ public class PuzzleAStar extends PuzzleSolver {
 
     // Setup new Puzzle and starting node to openList.
     public PuzzleAStar(String startState, Heuristic heuristicUsed) {
+        this.startState = startState;
         this.heuristicUsed = heuristicUsed;
         PNode startNode = new PNode(startState, 0, this.heuristicUsed);
         evaluatedNodes++;
         openList.add(startNode);
-
+        this.level = 0;
     }
 
     @Override
-    public void search() {
+    public List<String> search() {
+        List<String> finalList = new ArrayList<>();
+
         // While openList contains node, continue search.
         while (!openList.isEmpty()) {
-            // Take best Node from open list (lowest F value)
 
+            boolean levelHasChanged = false;
+            if (nodeCurrent.costF < openList.peek().costF) levelHasChanged = true;
+
+            // Take best Node from open list (lowest F value)
             nodeCurrent = openList.poll();
 //            System.out.println("Current Node F-level: " + nodeCurrent.costF);
 //            System.out.println("Current Node H-level: " + nodeCurrent.costH);
 
             if(nodeCurrent.state.equals(goalState)){
                 finishedOutput();
-                return;
+                return finalList;
             }
 
-            expandedNodes++;
+                expandedNodes++;
 //            System.out.println("Expanded nodes currently: "+ expandedNodes);
             expandNode(nodeCurrent);
+
+            if (levelHasChanged){
+                this.level++;
+                // Adding generated Nodes for this level.
+                finalList.add(generatedNodes +"");
+                // Adding expanded nodes for this level.
+                finalList.add(expandedNodes +"");
+                // Adding evaluated nodes for this level.
+                finalList.add(evaluatedNodes +"");
+            }
         }
+        return null;
     }
 
     private void expandNode(PNode nodeCurrent) {

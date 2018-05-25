@@ -6,13 +6,16 @@ import java.util.*;
 
 public class PuzzleASharp extends PuzzleSolver {
 
+    public String startState;
     private String goalState = "123456780";
     private PNode nodeCurrent;
     private int expandedNodes = 0;
     private int generatedNodes = 0;
     private int evaluatedNodes = 0;
-    private Heuristic heuristicUsed;
+    public String solverName = "A Sharp";
+    public Heuristic heuristicUsed;
     private boolean finished = false;
+    public int level;
 
     private Comparator<PNode> comparator = new Comparator<PNode>() {
         @Override
@@ -31,24 +34,41 @@ public class PuzzleASharp extends PuzzleSolver {
     // Setup new Puzzle and starting node to openList.
     public PuzzleASharp(String startState, Heuristic heuristicUsed) {
         this.heuristicUsed = heuristicUsed;
+        this.startState = startState;
         PNode startNode = new PNode(startState, 0, this.heuristicUsed);
         evaluatedNodes++;
         openList.add(startNode);
+        this.level = 0;
     }
 
     @Override
-    public void search() {
+    public List<String> search() {
+        List<String> finalList = new ArrayList<>();
+
         // While openList contains node, continue search.
         while (!openList.isEmpty()) {
-            // Take best Node from open list (lowest F value)
 
+            boolean levelHasChanged = false;
+            if (nodeCurrent.costP < openList.peek().costP) levelHasChanged = true;
+
+            // Take best Node from open list (lowest F value)
             nodeCurrent = openList.poll();
 //            System.out.println("Current Node F-level: " + nodeCurrent.costF);
 //            System.out.println("Current Node H-level: " + nodeCurrent.costH);
 
             if(nodeCurrent.state.equals(goalState)){
                 finishedOutput();
-                return;
+                return finalList;
+            }
+
+            if (levelHasChanged){
+                this.level++;
+                // Adding generated Nodes for this level.
+                finalList.add(generatedNodes +"");
+                // Adding expanded nodes for this level.
+                finalList.add(expandedNodes +"");
+                // Adding evaluated nodes for this level.
+                finalList.add(evaluatedNodes +"");
             }
 
 //            System.out.println("Expanded nodes currently: "+ expandedNodes);
@@ -56,13 +76,12 @@ public class PuzzleASharp extends PuzzleSolver {
             // If Neighbours state satisfied Goal then exit
             if (finished){
                 finishedOutput();
-                return;
+                return finalList;
             }
 
             expandedNodes++;
-
-
         }
+        return null;
     }
 
     private void expandNode(PNode nodeCurrent) {

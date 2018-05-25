@@ -28,6 +28,10 @@ public class CSVWriter {
             this.listOfHeaders.add("Level " + i + " nodes Expanded");
             this.listOfHeaders.add("Level " + i + " nodes Evaluated");
         }
+
+        this.listOfHeaders.add("Total nodes Generated");
+        this.listOfHeaders.add("Total nodes Expanded");
+        this.listOfHeaders.add("Total nodes Evaluated");
     }
 
     public void setupCSVWriter () {

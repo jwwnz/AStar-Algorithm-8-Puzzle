@@ -20,15 +20,18 @@ public class FileReader {
     public BufferedReader reader;
     public List<Node> nodes;
     public CSVWriter myWriter;
+    public int problemLength;
 
     public FileReader() {
 
     }
 
-    public void readFile(String fileLocation) {
+    public void readFile(String fileLocation, int problemLength) {
+
+        this.problemLength = problemLength;
 
         //Setting up writing of CSV
-        this.myWriter = new CSVWriter(10);
+        this.myWriter = new CSVWriter(problemLength);
         myWriter.setupCSVWriter();
 
         Parser parser = new Parser();
@@ -90,7 +93,12 @@ public class FileReader {
 
     public void runAlgorithm(PuzzleSolver solver) {
         // Creating list of first six items.
+
         List<String> preliminarySixList= new ArrayList<>();
+        // 1. Adding Algorithm name
+        preliminarySixList.add(solver.solverName);
+
+        // 2. Adding heuristic name
         preliminarySixList.add(solver.heuristicUsed.name);
 
         long timeFirst = System.nanoTime();
@@ -102,6 +110,18 @@ public class FileReader {
 
         System.out.println("CPU time in microseconds: " + inMicroseconds);
         System.out.println("-------------------");
+
+        // 3. Adding CPU time
+        preliminarySixList.add(inMicroseconds + "microseconds");
+
+        // 4. Adding Initial state
+        preliminarySixList.add(solver.startState);
+
+        // 5. Adding goalState
+        preliminarySixList.add("123456780");
+
+        // 6. Adding problem length
+        preliminarySixList.add(this.problemLength + "");
 
         //adding following lists together using list.addAll(a,b) 6 items + 11 * 3 + 3
 //        myWriter.addEntry();
