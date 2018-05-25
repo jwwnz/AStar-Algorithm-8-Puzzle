@@ -18,7 +18,7 @@ public class CSVWriter {
 
         this.listOfHeaders.add("Algorithm");
         this.listOfHeaders.add("Heuristic");
-        this.listOfHeaders.add("CPUTime");
+        this.listOfHeaders.add("CPUTime (milliseconds)");
         this.listOfHeaders.add("Initial State");
         this.listOfHeaders.add("Goal State");
         this.listOfHeaders.add("Optimal sol cost");
@@ -34,7 +34,8 @@ public class CSVWriter {
         this.listOfHeaders.add("Total nodes Evaluated");
     }
 
-    public void setupCSVWriter () {
+    public void setupCSVWriter (String outputDirectory) {
+        this.outputDirectory = outputDirectory;
         try {
             BufferedWriter bW = new BufferedWriter(new FileWriter(this.outputDirectory));
 

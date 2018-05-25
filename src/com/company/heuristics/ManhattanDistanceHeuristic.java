@@ -2,14 +2,16 @@ package com.company.heuristics;
 
 public class ManhattanDistanceHeuristic extends Heuristic {
 
-    public String name = "Manhattan Distance";
+    public String name;
     String goalState = "123456780";
     int minus;
 
     public ManhattanDistanceHeuristic() {
+        this.name = "Manhattan Distance";
     }
 
     public ManhattanDistanceHeuristic(int minus) {
+        this.name = "Manhattan Distance -" + minus;
         this.minus = minus;
         this.name += -minus;
     }

@@ -21,7 +21,6 @@ public class FileReader {
     public List<Node> nodes;
     public CSVWriter myWriter;
     public int problemLength;
-
     public FileReader() {
 
     }
@@ -32,7 +31,7 @@ public class FileReader {
 
         //Setting up writing of CSV
         this.myWriter = new CSVWriter(problemLength);
-        myWriter.setupCSVWriter();
+        myWriter.setupCSVWriter("length"+problemLength+"data.csv");
 
         Parser parser = new Parser();
         try {
@@ -54,30 +53,30 @@ public class FileReader {
 
                     System.out.println("| Manhattan |");
                     PuzzleAStar myAStarManhattan = new PuzzleAStar(puzzleSequence, new ManhattanDistanceHeuristic());
-                    runAlgorithm(myAStarManhattan);
+                    runAlgorithm(myAStarManhattan, puzzleSequence, "Man", "A*");
 //
-//                    System.out.println("| Manhattan - 1 |");
-//                    PuzzleAStar myAStarManhattanM = new PuzzleAStar(puzzleSequence, new ManhattanDistanceHeuristic(1));
-//                    runAlgorithm(myAStarManhattanM);
+                    System.out.println("| Manhattan - 1 |");
+                    PuzzleAStar myAStarManhattanM = new PuzzleAStar(puzzleSequence, new ManhattanDistanceHeuristic(1));
+                    runAlgorithm(myAStarManhattanM, puzzleSequence, "Man-1","A*");
 
-//                    System.out.println("| Misplaced Tile |");
-//                    PuzzleAStar myAStarMisplaced = new PuzzleAStar(puzzleSequence, new MisplacedTilesHeuristic());
-//                    runAlgorithm(myAStarMisplaced);
+                    System.out.println("| Misplaced Tile |");
+                    PuzzleAStar myAStarMisplaced = new PuzzleAStar(puzzleSequence, new MisplacedTilesHeuristic());
+                    runAlgorithm(myAStarMisplaced, puzzleSequence, "Misplaced","A*");
 
                     //Run A Sharp Algorithm
                     System.out.println(">>>> A-Sharp <<<<");
 
-//                    System.out.println("| Manhattan |");
-//                    PuzzleASharp myASharpManhattan = new PuzzleASharp(puzzleSequence, new ManhattanDistanceHeuristic());
-//                    runAlgorithm(myASharpManhattan);
+                    System.out.println("| Manhattan |");
+                    PuzzleASharp myASharpManhattan = new PuzzleASharp(puzzleSequence, new ManhattanDistanceHeuristic());
+                    runAlgorithm(myASharpManhattan, puzzleSequence, "Man", "A#");
 //
-//                    System.out.println("| Manhattan - 1 |");
-//                    PuzzleASharp myASharpManhattanM = new PuzzleASharp(puzzleSequence, new ManhattanDistanceHeuristic(1));
-//                    runAlgorithm(myASharpManhattanM);
+                    System.out.println("| Manhattan - 1 |");
+                    PuzzleASharp myASharpManhattanM = new PuzzleASharp(puzzleSequence, new ManhattanDistanceHeuristic(1));
+                    runAlgorithm(myASharpManhattanM, puzzleSequence, "Man-1", "A#");
 
-//                    System.out.println("| Misplaced Tile |");
-//                    PuzzleASharp myASharpMisplaced = new PuzzleASharp(puzzleSequence, new MisplacedTilesHeuristic());
-//                    runAlgorithm(myASharpMisplaced);
+                    System.out.println("| Misplaced Tile |");
+                    PuzzleASharp myASharpMisplaced = new PuzzleASharp(puzzleSequence, new MisplacedTilesHeuristic());
+                    runAlgorithm(myASharpMisplaced, puzzleSequence, "Misplaced","A#");
 
                     System.out.println("Round finished");
                     System.out.println("-------------------");
@@ -91,31 +90,31 @@ public class FileReader {
         }
     }
 
-    public void runAlgorithm(PuzzleSolver solver) {
+    public void runAlgorithm(PuzzleSolver solver, String startState, String heuristicName, String algorithmName) {
         // Creating list of first six items.
 
         List<String> preliminarySixList= new ArrayList<>();
         // 1. Adding Algorithm name
-        preliminarySixList.add(solver.solverName);
+        preliminarySixList.add(algorithmName);
 
         // 2. Adding heuristic name
-        preliminarySixList.add(solver.heuristicUsed.name);
+        preliminarySixList.add(heuristicName);
 
         long timeFirst = System.nanoTime();
 
-        solver.search();
+        List<String> secondList = solver.search();
 
         long timeSecond = System.nanoTime() - timeFirst;
-        double inMicroseconds = TimeUnit.MICROSECONDS.convert(timeSecond, TimeUnit.NANOSECONDS);
+        double inMilliseconds = TimeUnit.MILLISECONDS.convert(timeSecond, TimeUnit.NANOSECONDS);
 
-        System.out.println("CPU time in microseconds: " + inMicroseconds);
+        System.out.println("CPU time in milliseconds: " + inMilliseconds);
         System.out.println("-------------------");
 
         // 3. Adding CPU time
-        preliminarySixList.add(inMicroseconds + "microseconds");
+        preliminarySixList.add(inMilliseconds+"");
 
         // 4. Adding Initial state
-        preliminarySixList.add(solver.startState);
+        preliminarySixList.add(startState);
 
         // 5. Adding goalState
         preliminarySixList.add("123456780");
@@ -124,7 +123,9 @@ public class FileReader {
         preliminarySixList.add(this.problemLength + "");
 
         //adding following lists together using list.addAll(a,b) 6 items + 11 * 3 + 3
-//        myWriter.addEntry();
+        preliminarySixList.addAll(secondList);
+
+        myWriter.addEntry(preliminarySixList);
     }
 
 }

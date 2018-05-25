@@ -14,6 +14,9 @@ public class PNode {
     int costF;
     int costP;
     PNode parentNode;
+    int countGenerated = 0;
+    int countExpanded = 0;
+    int countEvaluated = 0;
 
     //  Constructor to create Initial node:
     public PNode(String state, int costG, Heuristic heuristic) {

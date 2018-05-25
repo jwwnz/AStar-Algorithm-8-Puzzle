@@ -15,29 +15,9 @@ public class Main {
 
     public static void main(String[] args) {
 
-//        System.out.println(parser.parseThis("035162874"));
-
-        CSVWriter newWriter = new CSVWriter(10);
-        newWriter.setupCSVWriter();
-
+        // Specify your file and the optimal problem length of your dataset.
         new FileReader().readFile("10.pl", 10);
-//
-//        System.out.println("-----------------------");
-//        System.out.println("25 PL");
         new FileReader().readFile("25.pl", 25);
-
 
     }
 }
-
-// Old Code:
-
-//
-//    AStar astar = new AStar();
-//
-//        for(Node node : astar.openList) System.out.println(node.f);
-//
-//                astar.search();
-//                System.out.println(astar.nodesOpened);
-//
-////        for(Node node : astar.closedList) System.out.println(node.f);

@@ -12,16 +12,17 @@ public class PuzzleAStar extends PuzzleSolver {
     private int expandedNodes = 0;
     private int generatedNodes = 0;
     private int evaluatedNodes = 0;
-    public String solverName = "A Star";
+    public String solverName;
     public Heuristic heuristicUsed;
     public int level;
+    public List<PNode> listOfParents = new ArrayList<>();
 
     private Comparator<PNode> comparator = new Comparator<PNode>() {
         @Override
         public int compare(PNode o1, PNode o2) {
-            if (o1.costF == o2.costF) {
-                return Integer.compare(o1.costH, o2.costH);
-            }
+//            if (o1.costF == o2.costF) {
+//                return Integer.compare(o1.costH, o2.costH);
+//            }
             return Integer.compare(o1.costF, o2.costF);
         }
     };
@@ -31,6 +32,7 @@ public class PuzzleAStar extends PuzzleSolver {
 
     // Setup new Puzzle and starting node to openList.
     public PuzzleAStar(String startState, Heuristic heuristicUsed) {
+        this.solverName = "A Star";
         this.startState = startState;
         this.heuristicUsed = heuristicUsed;
         PNode startNode = new PNode(startState, 0, this.heuristicUsed);
@@ -46,32 +48,20 @@ public class PuzzleAStar extends PuzzleSolver {
         // While openList contains node, continue search.
         while (!openList.isEmpty()) {
 
-            boolean levelHasChanged = false;
-            if (nodeCurrent.costF < openList.peek().costF) levelHasChanged = true;
-
             // Take best Node from open list (lowest F value)
             nodeCurrent = openList.poll();
-//            System.out.println("Current Node F-level: " + nodeCurrent.costF);
-//            System.out.println("Current Node H-level: " + nodeCurrent.costH);
+            System.out.println("Current Node F-level: " + nodeCurrent.costF);
+            System.out.println("Current Node H-level: " + nodeCurrent.costH);
 
-            if(nodeCurrent.state.equals(goalState)){
-                finishedOutput();
+            if (nodeCurrent.state.equals(goalState)) {
+                finalList.addAll(finishedOutput());
                 return finalList;
             }
 
-                expandedNodes++;
-//            System.out.println("Expanded nodes currently: "+ expandedNodes);
+            expandedNodes++;
+            nodeCurrent.countExpanded = expandedNodes;
+            System.out.println("Expanded nodes currently: " + expandedNodes);
             expandNode(nodeCurrent);
-
-            if (levelHasChanged){
-                this.level++;
-                // Adding generated Nodes for this level.
-                finalList.add(generatedNodes +"");
-                // Adding expanded nodes for this level.
-                finalList.add(expandedNodes +"");
-                // Adding evaluated nodes for this level.
-                finalList.add(evaluatedNodes +"");
-            }
         }
         return null;
     }
@@ -88,15 +78,15 @@ public class PuzzleAStar extends PuzzleSolver {
             generateSuccessor(updateState(nodeCurrent.state, index0, moveZeroBy - 3), currentCostG);
         }
         // Can go down
-        if (index0 < 6){
+        if (index0 < 6) {
             generateSuccessor(updateState(nodeCurrent.state, index0, moveZeroBy + 3), currentCostG);
         }
         // can go left
-        if (index0 != 0 && index0 != 3 && index0 != 6){
+        if (index0 != 0 && index0 != 3 && index0 != 6) {
             generateSuccessor(updateState(nodeCurrent.state, index0, moveZeroBy - 1), currentCostG);
         }
         // can go right
-        if (index0 != 2 && index0 != 5 && index0 != 8){
+        if (index0 != 2 && index0 != 5 && index0 != 8) {
             generateSuccessor(updateState(nodeCurrent.state, index0, moveZeroBy + 1), currentCostG);
         }
         closedList.put(nodeCurrent.state, nodeCurrent);
@@ -105,10 +95,12 @@ public class PuzzleAStar extends PuzzleSolver {
     private void generateSuccessor(String newState, int parentCostG) {
 
         generatedNodes++;
+        nodeCurrent.countGenerated = generatedNodes;
 
         // create a new Node (nodeSuccessor).
         PNode nodeSuccessor = new PNode(newState, parentCostG + 1, this.heuristicUsed);
         evaluatedNodes++;
+        nodeCurrent.countEvaluated = evaluatedNodes;
 
 //        System.out.println("G cost: " + nodeSuccessor.costG);
 //        System.out.println("F cost: " + nodeSuccessor.costF);
@@ -128,7 +120,7 @@ public class PuzzleAStar extends PuzzleSolver {
         }
 
         // if nodeSuccessor is on the Closed list, but the existing one is as good then discard
-        if (closedList.containsKey(newState) && closedList.get(newState).costF <= nodeSuccessor.costF){
+        if (closedList.containsKey(newState) && closedList.get(newState).costF <= nodeSuccessor.costF) {
             return;
         } else if (closedList.containsKey(newState) && closedList.get(newState).costF > nodeSuccessor.costF) {
             closedList.remove(newState);
@@ -141,7 +133,7 @@ public class PuzzleAStar extends PuzzleSolver {
         openList.add(nodeSuccessor);
     }
 
-    private String updateState(String currentState, int indexZero, int moveZeroBy){
+    private String updateState(String currentState, int indexZero, int moveZeroBy) {
         // Change state by swapping around 0 value with move
         char movedChar = currentState.charAt(indexZero + moveZeroBy);
 
@@ -153,12 +145,45 @@ public class PuzzleAStar extends PuzzleSolver {
         return new String(charSet);
     }
 
-    private void finishedOutput() {
+    private List<String> finishedOutput() {
         System.out.println("Reached Goalstate!");
         System.out.println("Final F-level: " + nodeCurrent.costF);
         System.out.println("Final H-level: " + nodeCurrent.costH);
         System.out.println("Nodes expanded: " + expandedNodes);
         System.out.println("Nodes generated: " + generatedNodes);
         System.out.println("Nodes expanded: " + expandedNodes);
+
+        nodeCurrent.countGenerated = generatedNodes;
+
+        // while node has a parent, extract out generatedNodes, expandedNodes, evaluatedNodes.
+        getParent(nodeCurrent);
+        List<String> tempList = new ArrayList<>();
+
+        //add for level 0
+        tempList.add("0");
+        tempList.add("0");
+        tempList.add("0");
+
+        for (int i = listOfParents.size()-1; i > -1; i--) {
+            PNode parent = listOfParents.get(i);
+
+            tempList.add(parent.countGenerated + "");
+            tempList.add(parent.countExpanded + "");
+            tempList.add(parent.countEvaluated + "");
+        }
+
+        tempList.add(generatedNodes + "");
+        tempList.add(expandedNodes + "");
+        tempList.add(evaluatedNodes + "");
+
+        return tempList;
+    }
+
+    //recursive method to get all the parents for levels.
+    public void getParent(PNode childNode) {
+        if (childNode.parentNode != null) {
+            listOfParents.add(childNode.parentNode);
+            getParent(childNode.parentNode);
+        }
     }
 }
