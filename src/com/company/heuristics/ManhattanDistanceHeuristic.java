@@ -2,9 +2,20 @@ package com.company.heuristics;
 
 public class ManhattanDistanceHeuristic extends Heuristic {
 
+    String name = "Manhattan Distance";
     String goalState = "123456780";
+    int minus;
 
-    public int calculateHeuristic(String state , int minus) {
+    public ManhattanDistanceHeuristic() {
+    }
+
+    public ManhattanDistanceHeuristic(int minus) {
+        this.minus = minus;
+        this.name += -minus;
+    }
+
+    @Override
+    public int calculateHeuristic(String state) {
         int costH = 0;
         for (int i = 0; i < state.length(); i++){
             // the current location of a particular char, and get Y and X (excluding blank tile 0).
@@ -19,7 +30,7 @@ public class ManhattanDistanceHeuristic extends Heuristic {
                 costH += Math.abs(retrieveX(i) - retrieveX(goalIndex));
             }
         }
-        return Math.max(0, costH - minus);
+        return Math.max(0, costH - this.minus);
     }
 
     public int retrieveY (int index){

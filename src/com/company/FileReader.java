@@ -1,5 +1,7 @@
 package com.company;
 
+import com.company.heuristics.Heuristic;
+import com.company.heuristics.ManhattanDistanceHeuristic;
 import com.sun.org.apache.xerces.internal.impl.xpath.regex.Match;
 
 import java.io.BufferedReader;
@@ -33,22 +35,19 @@ public class FileReader {
                     System.out.println("Puzzle with sequence: " + puzzleSequence);
 
                     //Run A Star Algorithm
-                    System.out.println("A-Star");
-                    long timeFirst = System.nanoTime();
-                    PuzzleAStar myAStar = new PuzzleAStar(puzzleSequence);
-                    myAStar.search();
-                    long timeSecond = System.nanoTime() - timeFirst;
-                    double inMicroseconds = TimeUnit.MICROSECONDS.convert(timeSecond, TimeUnit.NANOSECONDS);
-                    System.out.println("CPU time in microseconds: " + inMicroseconds);
+                    System.out.println(">>>> A-Star <<<<");
+//                    long timeFirst = System.nanoTime();
+
+
+                    PuzzleAStar myAStar = new PuzzleAStar(puzzleSequence, new ManhattanDistanceHeuristic());
+                    runAlgorithm(myAStar);
+
 
                     //Run A Sharp Algorithm
-                    System.out.println("A-Sharp");
-                    timeFirst = System.nanoTime();
-                    PuzzleASharp myASharp = new PuzzleASharp(puzzleSequence);
-                    myASharp.search();
-                    timeSecond = System.nanoTime() - timeFirst;
-                    inMicroseconds = TimeUnit.MICROSECONDS.convert(timeSecond, TimeUnit.NANOSECONDS);
-                    System.out.println("CPU time in microseconds: " + inMicroseconds);
+                    System.out.println(">>>> A-Sharp <<<<");
+
+                    PuzzleASharp myASharp = new PuzzleASharp(puzzleSequence, new ManhattanDistanceHeuristic());
+                    runAlgorithm(myASharp);
 
                     System.out.println("Round finished");
                     System.out.println("-------------------");
@@ -60,6 +59,17 @@ public class FileReader {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public void runAlgorithm(PuzzleSolver solver) {
+        long timeFirst = System.nanoTime();
+
+        solver.search();
+
+        long timeSecond = System.nanoTime() - timeFirst;
+        double inMicroseconds = TimeUnit.MICROSECONDS.convert(timeSecond, TimeUnit.NANOSECONDS);
+
+        System.out.println("CPU time in microseconds: " + inMicroseconds);
     }
 
 }

@@ -1,5 +1,7 @@
 package com.company;
 
+import com.company.heuristics.Heuristic;
+
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -11,6 +13,7 @@ public class PuzzleAStar extends PuzzleSolver {
     private PNode nodeCurrent;
     private int expandedNodes = 0;
     private int generatedNodes = 0;
+    private Heuristic heuristicUsed;
 
     private Comparator<PNode> comparator = new Comparator<PNode>() {
         @Override
@@ -26,12 +29,14 @@ public class PuzzleAStar extends PuzzleSolver {
     private HashMap<String, PNode> closedList = new HashMap<>();
 
     // Setup new Puzzle and starting node to openList.
-    public PuzzleAStar(String startState) {
-        PNode startNode = new PNode(startState, 0);
+    public PuzzleAStar(String startState, Heuristic heuristicUsed) {
+        this.heuristicUsed = heuristicUsed;
+        PNode startNode = new PNode(startState, 0, this.heuristicUsed);
         openList.add(startNode);
 
     }
 
+    @Override
     public void search() {
         // While openList contains node, continue search.
         while (!openList.isEmpty()) {
@@ -83,7 +88,7 @@ public class PuzzleAStar extends PuzzleSolver {
         generatedNodes++;
 
         // create a new Node (nodeSuccessor).
-        PNode nodeSuccessor = new PNode(newState, parentCostG + 1);
+        PNode nodeSuccessor = new PNode(newState, parentCostG + 1, this.heuristicUsed);
 //        System.out.println("G cost: " + nodeSuccessor.costG);
 //        System.out.println("F cost: " + nodeSuccessor.costF);
 

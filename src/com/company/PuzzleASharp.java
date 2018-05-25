@@ -1,5 +1,7 @@
 package com.company;
 
+import com.company.heuristics.Heuristic;
+
 import java.util.*;
 
 public class PuzzleASharp extends PuzzleSolver {
@@ -9,6 +11,7 @@ public class PuzzleASharp extends PuzzleSolver {
     private int expandedNodes = 0;
     private int generatedNodes = 0;
     private int evaluatedNodes = 0;
+    private Heuristic heuristicUsed;
     private boolean finished = false;
 
     private Comparator<PNode> comparator = new Comparator<PNode>() {
@@ -26,12 +29,14 @@ public class PuzzleASharp extends PuzzleSolver {
     private HashMap<String, PNode> closedList = new HashMap<>();
 
     // Setup new Puzzle and starting node to openList.
-    public PuzzleASharp(String startState) {
-        PNode startNode = new PNode(startState, 0);
+    public PuzzleASharp(String startState, Heuristic heuristicUsed) {
+        this.heuristicUsed = heuristicUsed;
+        PNode startNode = new PNode(startState, 0, this.heuristicUsed);
         evaluatedNodes++;
         openList.add(startNode);
     }
 
+    @Override
     public void search() {
         // While openList contains node, continue search.
         while (!openList.isEmpty()) {
@@ -98,7 +103,7 @@ public class PuzzleASharp extends PuzzleSolver {
             return;
         }
         // create a new Node (nodeSuccessor).
-        PNode nodeSuccessor = new PNode(newState, parentCostG + 1);
+        PNode nodeSuccessor = new PNode(newState, parentCostG + 1, this.heuristicUsed);
         evaluatedNodes++;
 
         // check if openList contains this new State?
