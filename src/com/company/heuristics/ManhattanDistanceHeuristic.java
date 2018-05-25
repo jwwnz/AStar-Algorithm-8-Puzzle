@@ -2,7 +2,7 @@ package com.company.heuristics;
 
 public class ManhattanDistanceHeuristic extends Heuristic {
 
-    String name = "Manhattan Distance";
+    public String name = "Manhattan Distance";
     String goalState = "123456780";
     int minus;
 

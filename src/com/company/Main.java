@@ -1,5 +1,7 @@
 package com.company;
 
+import com.company.CSV.CSVWriter;
+
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -15,11 +17,14 @@ public class Main {
 
 //        System.out.println(parser.parseThis("035162874"));
 
-        new FileReader().readFile("10.pl");
+        CSVWriter newWriter = new CSVWriter(10);
+        newWriter.setupCSVWriter();
 
-        System.out.println("-----------------------");
-        System.out.println("12 PL");
-        new FileReader().readFile("25.pl");
+//        new FileReader().readFile("10.pl");
+//
+//        System.out.println("-----------------------");
+//        System.out.println("25 PL");
+//        new FileReader().readFile("25.pl");
 
 
     }

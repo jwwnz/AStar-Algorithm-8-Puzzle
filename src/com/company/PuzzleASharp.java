@@ -18,9 +18,9 @@ public class PuzzleASharp extends PuzzleSolver {
         @Override
         public int compare(PNode o1, PNode o2) {
             // ASharp algorithm differentiator #2: sorts openList by P-cost ( max(G-cost + 1, F-cost) )
-//            if (o1.costP == o2.costP) {
-//                return Integer.compare(o1.costH, o2.costH);
-//            }
+            if (o1.costP == o2.costP) {
+                return Integer.compare(o1.costH, o2.costH);
+            }
             return Integer.compare(o1.costP, o2.costP);
         }
     };

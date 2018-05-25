@@ -13,7 +13,8 @@ public class PuzzleAStar extends PuzzleSolver {
     private PNode nodeCurrent;
     private int expandedNodes = 0;
     private int generatedNodes = 0;
-    private Heuristic heuristicUsed;
+    private int evaluatedNodes = 0;
+    public Heuristic heuristicUsed;
 
     private Comparator<PNode> comparator = new Comparator<PNode>() {
         @Override
@@ -32,6 +33,7 @@ public class PuzzleAStar extends PuzzleSolver {
     public PuzzleAStar(String startState, Heuristic heuristicUsed) {
         this.heuristicUsed = heuristicUsed;
         PNode startNode = new PNode(startState, 0, this.heuristicUsed);
+        evaluatedNodes++;
         openList.add(startNode);
 
     }
@@ -89,6 +91,8 @@ public class PuzzleAStar extends PuzzleSolver {
 
         // create a new Node (nodeSuccessor).
         PNode nodeSuccessor = new PNode(newState, parentCostG + 1, this.heuristicUsed);
+        evaluatedNodes++;
+
 //        System.out.println("G cost: " + nodeSuccessor.costG);
 //        System.out.println("F cost: " + nodeSuccessor.costF);
 
@@ -138,5 +142,6 @@ public class PuzzleAStar extends PuzzleSolver {
         System.out.println("Final H-level: " + nodeCurrent.costH);
         System.out.println("Nodes expanded: " + expandedNodes);
         System.out.println("Nodes generated: " + generatedNodes);
+        System.out.println("Nodes expanded: " + expandedNodes);
     }
 }

@@ -2,7 +2,7 @@ package com.company.heuristics;
 
 public class MisplacedTilesHeuristic extends Heuristic {
 
-    String name = "Misplaced Tile";
+    public String name = "Misplaced Tile";
     String goalState = "123456780";
 
     @Override
